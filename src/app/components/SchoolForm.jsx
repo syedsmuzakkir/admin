@@ -6,7 +6,15 @@ import { Button } from "@/components/ui/button";
 
 export default function SchoolForm({ initialData, onSubmit, onClose }) {
   const [formData, setFormData] = useState(
-    initialData || { name: "", status: "Active" }
+    initialData || {
+      name: "",
+      location: "",
+      address: "", // New field
+      phone: "",   // New field
+      email: "",   // New field
+      establishedDate: "", // New field
+      status: "Active",
+    }
   );
 
   const handleChange = (e) => {
@@ -38,6 +46,71 @@ export default function SchoolForm({ initialData, onSubmit, onClose }) {
               required
             />
           </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              School Location
+            </label>
+            <Input
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Address
+            </label>
+            <Input
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Phone Number
+            </label>
+            <Input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <Input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Established Date
+            </label>
+            <Input
+              type="date"
+              name="establishedDate"
+              value={formData.establishedDate}
+              onChange={handleChange}
+            />
+          </div>
+
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
               Status
@@ -52,6 +125,7 @@ export default function SchoolForm({ initialData, onSubmit, onClose }) {
               <option value="Inactive">Inactive</option>
             </select>
           </div>
+
           <div className="flex justify-end">
             <Button type="button" onClick={onClose} className="mr-2">
               Cancel

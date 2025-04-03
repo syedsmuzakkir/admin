@@ -1,42 +1,6 @@
-// // app/admin/reports/page.jsx
-// "use client";
-
-
-// import DummyChart from "@/app/components/DummyChart";
-// import BarChart from "@/components/ui/charts";
-
-// export default function ReportsPage() {
-
-//     const data = [
-//         { name: "School 1", value: 10 },
-//         { name: "School 2", value: 30 },
-//         { name: "School 3", value: 50 },
-//       ];
-    
-//   return (
-//     <div>
-//       <h1 className="text-2xl font-bold mb-4">Reports</h1>
-//       <div className="grid grid-cols-1 gap-6">
-//         <div className="p-4 bg-white dark:bg-gray-800 shadow rounded">
-//           <h2 className="text-lg font-bold">Student Activity Report</h2>
-//           <DummyChart />
-//         </div>
-//         <div className="p-4 bg-white dark:bg-gray-800 shadow rounded">
-//           <h2 className="text-lg font-bold">School Engagement Report</h2>
-//           <DummyChart />
-//           <BarChart data={data} />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-
-
 "use client";
 
 import { useState } from "react";
-import DummyChart from "@/app/components/DummyChart";
 import BarChart from "@/components/ui/charts";
 import { Button } from "@/components/ui/button";
 import { saveAs } from "file-saver";
@@ -70,32 +34,61 @@ export default function ReportsPage() {
     saveAs(blob, filename);
   };
 
+  // Prepare data for the Student Activity Bar Chart
+  const enrollmentsData = studentActivityReport.map((item) => ({
+    name: item.date,
+    value: item.newEnrollments,
+    type: "Enrollments", // Add type for better visualization
+  }));
+
+  const dropoutsData = studentActivityReport.map((item) => ({
+    name: item.date,
+    value: item.dropouts,
+    type: "Dropouts", // Add type for better visualization
+  }));
+
+  // Combine the data for a grouped bar chart
+  const combinedActivityData = [...enrollmentsData, ...dropoutsData];
+
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Reports</h1>
-      
+
       <div className="grid grid-cols-1 gap-6">
         <div className="p-4 bg-white dark:bg-gray-800 shadow rounded">
           <h2 className="text-lg font-bold">Student Activity Report</h2>
-          <DummyChart />
-          <p className="text-sm mt-2">New Enrollments: {studentActivityReport[studentActivityReport.length - 1].newEnrollments}</p>
-          <p className="text-sm">Dropouts: {studentActivityReport[studentActivityReport.length - 1].dropouts}</p>
-          <Button onClick={() => exportCSV(studentActivityReport, "student_activity.csv")} className="mt-2">Download CSV</Button>
+          <BarChart data={combinedActivityData} />
+          <p className="text-sm mt-2">
+            New Enrollments: {studentActivityReport[studentActivityReport.length - 1].newEnrollments}
+          </p>
+          <p className="text-sm">
+            Dropouts: {studentActivityReport[studentActivityReport.length - 1].dropouts}
+          </p>
+          <Button onClick={() => exportCSV(studentActivityReport, "student_activity.csv")} className="mt-2">
+            Download CSV
+          </Button>
         </div>
-        
+
         <div className="p-4 bg-white dark:bg-gray-800 shadow rounded">
           <h2 className="text-lg font-bold">School Engagement Report</h2>
-          <DummyChart />
-          <BarChart data={schoolEngagementReport.map(item => ({ name: item.date, value: parseFloat(item.engagement) }))} />
-          <p className="text-sm mt-2">Active Schools: {schoolEngagementReport[schoolEngagementReport.length - 1].activeSchools}</p>
-          <p className="text-sm">Inactive Schools: {schoolEngagementReport[schoolEngagementReport.length - 1].inactiveSchools}</p>
-          <Button onClick={() => exportCSV(schoolEngagementReport, "school_engagement.csv")} className="mt-2">Download CSV</Button>
+          <BarChart data={schoolEngagementReport.map((item) => ({ name: item.date, value: parseFloat(item.engagement) }))} />
+          <p className="text-sm mt-2">
+            Active Schools: {schoolEngagementReport[schoolEngagementReport.length - 1].activeSchools}
+          </p>
+          <p className="text-sm">
+            Inactive Schools: {schoolEngagementReport[schoolEngagementReport.length - 1].inactiveSchools}
+          </p>
+          <Button onClick={() => exportCSV(schoolEngagementReport, "school_engagement.csv")} className="mt-2">
+            Download CSV
+          </Button>
         </div>
 
         <div className="p-4 bg-white dark:bg-gray-800 shadow rounded">
           <h2 className="text-lg font-bold">Student Performance Report</h2>
           <BarChart data={studentPerformanceReport} />
-          <Button onClick={() => exportCSV(studentPerformanceReport, "student_performance.csv")} className="mt-2">Download CSV</Button>
+          <Button onClick={() => exportCSV(studentPerformanceReport, "student_performance.csv")} className="mt-2">
+            Download CSV
+          </Button>
         </div>
       </div>
     </div>
