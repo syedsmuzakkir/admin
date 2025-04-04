@@ -6,8 +6,13 @@ const page = () => {
     <div>
 
 <SchoolManagementPage/>
+
+
+
     </div>
   )
 }
 
 export default page
+
+
