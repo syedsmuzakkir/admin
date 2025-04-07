@@ -1,208 +1,69 @@
-// "use client";
-
-// import { useState } from "react";
-// import { Input } from "@/components/ui/input";
-// import { Button } from "@/components/ui/button";
-
-// export default function SchoolForm({ initialData, onSubmit, onClose }) {
-//   const [formData, setFormData] = useState(
-//     initialData || {
-//       name: "",
-//       location: "",
-//       address: "", // New field
-//       phone: "",   // New field
-//       email: "",   // New field
-//       establishedDate: "", // New field
-//       status: "Active",
-//     }
-//   );
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData({ ...formData, [name]: value });
-//   };
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     onSubmit(formData);
-//   };
-
-//   return (
-//     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-//       <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-//         <h2 className="text-xl font-bold mb-4">
-//           {initialData ? "Edit School" : "Add New School"}
-//         </h2>
-//         <form onSubmit={handleSubmit}>
-//           <div className="mb-4">
-//             <label className="block text-sm font-medium text-gray-700">
-//               School Name
-//             </label>
-//             <Input
-//               type="text"
-//               name="name"
-//               value={formData.name}
-//               onChange={handleChange}
-//               required
-//             />
-//           </div>
-
-//           <div className="mb-4">
-//             <label className="block text-sm font-medium text-gray-700">
-//               School Location
-//             </label>
-//             <Input
-//               type="text"
-//               name="location"
-//               value={formData.location}
-//               onChange={handleChange}
-//               required
-//             />
-//           </div>
-
-//           <div className="mb-4">
-//             <label className="block text-sm font-medium text-gray-700">
-//               Address
-//             </label>
-//             <Input
-//               type="text"
-//               name="address"
-//               value={formData.address}
-//               onChange={handleChange}
-//               required
-//             />
-//           </div>
-
-//           <div className="mb-4">
-//             <label className="block text-sm font-medium text-gray-700">
-//               Phone Number
-//             </label>
-//             <Input
-//               type="tel"
-//               name="phone"
-//               value={formData.phone}
-//               onChange={handleChange}
-//               required
-//             />
-//           </div>
-
-//           <div className="mb-4">
-//             <label className="block text-sm font-medium text-gray-700">
-//               Email
-//             </label>
-//             <Input
-//               type="email"
-//               name="email"
-//               value={formData.email}
-//               onChange={handleChange}
-//               required
-//             />
-//           </div>
-
-//           <div className="mb-4">
-//             <label className="block text-sm font-medium text-gray-700">
-//               Established Date
-//             </label>
-//             <Input
-//               type="date"
-//               name="establishedDate"
-//               value={formData.establishedDate}
-//               onChange={handleChange}
-//             />
-//           </div>
-
-//           <div className="mb-4">
-//             <label className="block text-sm font-medium text-gray-700">
-//               Status
-//             </label>
-//             <select
-//               name="status"
-//               value={formData.status}
-//               onChange={handleChange}
-//               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
-//             >
-//               <option value="Active">Active</option>
-//               <option value="Inactive">Inactive</option>
-//             </select>
-//           </div>
-
-//           <div className="flex justify-end">
-//             <Button type="button" onClick={onClose} className="mr-2">
-//               Cancel
-//             </Button>
-//             <Button type="submit" className="bg-blue-500 hover:bg-blue-600">
-//               {initialData ? "Update" : "Add"}
-//             </Button>
-//           </div>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// }
-
-
-
-// 2
-
-
-
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState, useEffect } from "react";
+import { Country, State, City } from 'country-state-city';
+
+const schoolTypes = ["Public", "Private", "International", "Other"];
+const affiliations = ["CBSE", "ICSE", "IB", "State Board"];
+const mediumOfInstructionOptions = ["English", "Hindi", "Regional Language", "Bilingual"];
 
 export default function SchoolForm({ initialData, onSubmit, onClose }) {
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+
   const [formData, setFormData] = useState({
-    // Basic Information
     schoolName: initialData?.schoolName || "",
     schoolType: initialData?.schoolType || "",
     affiliation: initialData?.affiliation || "",
-    registrationNumber: initialData?.registrationNumber || "",
     yearOfEstablishment: initialData?.yearOfEstablishment || "",
-    // Location & Contact Details
     addressStreet: initialData?.addressStreet || "",
-    addressCity: initialData?.addressCity || "",
-    addressState: initialData?.addressState || "",
-    addressCountry: initialData?.addressCountry || "",
+    country: initialData?.country || "",
+    state: initialData?.state || "",
+    city: initialData?.city || "",
     zipCode: initialData?.zipCode || "",
-    contactNumberPrimary: initialData?.contactNumberPrimary || "",
-    contactNumberSecondary: initialData?.contactNumberSecondary || "",
     emailAddress: initialData?.emailAddress || "",
-    website: initialData?.website || "",
-    geolocationLatitude: initialData?.geolocationLatitude || "",
-    geolocationLongitude: initialData?.geolocationLongitude || "",
-    // Administration Details
+    contactNumber: initialData?.contactNumber || "",
     principalName: initialData?.principalName || "",
     principalContactNumber: initialData?.principalContactNumber || "",
     principalEmail: initialData?.principalEmail || "",
-    adminContactName: initialData?.adminContactName || "",
-    adminContactEmail: initialData?.adminContactEmail || "",
-    // Academic Information
-    gradesOffered: initialData?.gradesOffered || "",
     mediumOfInstruction: initialData?.mediumOfInstruction || "",
     studentStrength: initialData?.studentStrength || "",
-    // Authentication Details
     adminUsername: initialData?.adminUsername || "",
     adminPassword: initialData?.adminPassword || "",
-    // File uploads (will hold File objects)
     schoolRegistrationCertificate: null,
     accreditationCertificate: null,
   });
 
+  useEffect(() => {
+    setCountries(Country.getAllCountries());
+  }, []);
+
+  useEffect(() => {
+    if (formData.country) {
+      setStates(State.getStatesOfCountry(formData.country));
+      setFormData(prev => ({ ...prev, state: "", city: "" }));
+    }
+  }, [formData.country]);
+
+  useEffect(() => {
+    if (formData.country && formData.state) {
+      setCities(City.getCitiesOfState(formData.country, formData.state));
+      setFormData(prev => ({ ...prev, city: "" }));
+    }
+  }, [formData.state]);
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (files) {
-      setFormData({ ...formData, [name]: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    setFormData(prev => ({
+      ...prev,
+      [name]: files ? files[0] : value
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Basic validations
-    if (!formData.schoolName || !formData.addressCity) {
+    if (!formData.schoolName || !formData.city) {
       alert("School name and city are required!");
       return;
     }
@@ -210,228 +71,324 @@ export default function SchoolForm({ initialData, onSubmit, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg overflow-y-auto max-h-full w-full max-w-3xl">
-        <h2 className="text-xl font-bold mb-4">School Registration</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl overflow-y-auto max-h-full w-full max-w-3xl space-y-8">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">School Registration Form</h2>
 
-        {/* Basic Information */}
-        <div className="mb-4">
-          <h3 className="font-semibold mb-2">Basic Information</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input
-              name="schoolName"
-              placeholder="School Name"
-              value={formData.schoolName}
-              onChange={handleChange}
-              required
-            />
-            <Input
-              name="schoolType"
-              placeholder="School Type (Public/Private/International/Other)"
-              value={formData.schoolType}
-              onChange={handleChange}
-            />
-            <Input
-              name="affiliation"
-              placeholder="Affiliation (CBSE, ICSE, IB, State Board, etc.)"
-              value={formData.affiliation}
-              onChange={handleChange}
-            />
-            <Input
-              name="registrationNumber"
-              placeholder="Registration Number"
-              value={formData.registrationNumber}
-              onChange={handleChange}
-            />
-            <Input
-              name="yearOfEstablishment"
-              placeholder="Year of Establishment"
-              type="number"
-              value={formData.yearOfEstablishment}
-              onChange={handleChange}
-            />
+        {/* Basic Information Section */}
+        <section className="space-y-6 bg-gray-50 p-6 rounded-lg">
+          <h3 className="text-xl font-semibold text-gray-700 border-b-2 border-blue-200 pb-2">Basic Information</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">School Name *</label>
+              <input
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                name="schoolName"
+                value={formData.schoolName}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">School Type</label>
+              <select
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white"
+                name="schoolType"
+                value={formData.schoolType}
+                onChange={handleChange}
+              >
+                <option value="">Select type</option>
+                {schoolTypes.map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Affiliation</label>
+              <select
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white"
+                name="affiliation"
+                value={formData.affiliation}
+                onChange={handleChange}
+              >
+                <option value="">Select affiliation</option>
+                {affiliations.map(aff => (
+                  <option key={aff} value={aff}>{aff}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Year of Establishment</label>
+              <input
+                type="date"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                name="yearOfEstablishment"
+                value={formData.yearOfEstablishment}
+                onChange={handleChange}
+              />
+            </div>
           </div>
-        </div>
+        </section>
 
         {/* Location & Contact Details */}
-        <div className="mb-4">
-          <h3 className="font-semibold mb-2">Location & Contact Details</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input
-              name="addressStreet"
-              placeholder="Street Address"
-              value={formData.addressStreet}
-              onChange={handleChange}
-            />
-            <Input
-              name="addressCity"
-              placeholder="City"
-              value={formData.addressCity}
-              onChange={handleChange}
-            />
-            <Input
-              name="addressState"
-              placeholder="State"
-              value={formData.addressState}
-              onChange={handleChange}
-            />
-            <Input
-              name="addressCountry"
-              placeholder="Country"
-              value={formData.addressCountry}
-              onChange={handleChange}
-            />
-            <Input
-              name="zipCode"
-              placeholder="ZIP Code"
-              value={formData.zipCode}
-              onChange={handleChange}
-            />
-            <Input
-              name="contactNumberPrimary"
-              placeholder="Primary Contact Number"
-              value={formData.contactNumberPrimary}
-              onChange={handleChange}
-            />
-            <Input
-              name="contactNumberSecondary"
-              placeholder="Secondary Contact Number"
-              value={formData.contactNumberSecondary}
-              onChange={handleChange}
-            />
-            <Input
-              name="emailAddress"
-              placeholder="Email Address"
-              type="email"
-              value={formData.emailAddress}
-              onChange={handleChange}
-            />
-            <Input
-              name="website"
-              placeholder="Website (if applicable)"
-              value={formData.website}
-              onChange={handleChange}
-            />
-            <Input
-              name="geolocationLatitude"
-              placeholder="Latitude"
-              value={formData.geolocationLatitude}
-              onChange={handleChange}
-            />
-            <Input
-              name="geolocationLongitude"
-              placeholder="Longitude"
-              value={formData.geolocationLongitude}
-              onChange={handleChange}
-            />
+        <section className="space-y-6 bg-gray-50 p-6 rounded-lg">
+          <h3 className="text-xl font-semibold text-gray-700 border-b-2 border-blue-200 pb-2">Location & Contact</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Street Address</label>
+              <input
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                name="addressStreet"
+                value={formData.addressStreet}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Country</label>
+              <select
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white"
+                name="country"
+                value={formData.country}
+                onChange={handleChange}
+              >
+                <option value="">Select country</option>
+                {countries.map(country => (
+                  <option key={country.isoCode} value={country.isoCode}>
+                    {country.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">State</label>
+              <select
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white disabled:bg-gray-100"
+                name="state"
+                value={formData.state}
+                onChange={handleChange}
+                disabled={!formData.country}
+              >
+                <option value="">Select state</option>
+                {states.map(state => (
+                  <option key={state.isoCode} value={state.isoCode}>
+                    {state.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">City *</label>
+              <select
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white disabled:bg-gray-100"
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                disabled={!formData.state}
+                required
+              >
+                <option value="">Select city</option>
+                {cities.map(city => (
+                  <option key={city.name} value={city.name}>
+                    {city.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">ZIP Code</label>
+              <input
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                name="zipCode"
+                value={formData.zipCode}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Email Address</label>
+              <input
+                type="email"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                name="emailAddress"
+                value={formData.emailAddress}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Contact Number</label>
+              <input
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                name="contactNumber"
+                value={formData.contactNumber}
+                onChange={handleChange}
+              />
+            </div>
           </div>
-        </div>
+        </section>
 
         {/* Administration Details */}
-        <div className="mb-4">
-          <h3 className="font-semibold mb-2">Administration Details</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input
-              name="principalName"
-              placeholder="Principal’s Name"
-              value={formData.principalName}
-              onChange={handleChange}
-            />
-            <Input
-              name="principalContactNumber"
-              placeholder="Principal’s Contact Number"
-              value={formData.principalContactNumber}
-              onChange={handleChange}
-            />
-            <Input
-              name="principalEmail"
-              placeholder="Principal’s Email"
-              type="email"
-              value={formData.principalEmail}
-              onChange={handleChange}
-            />
-            <Input
-              name="adminContactName"
-              placeholder="Admin Contact Name"
-              value={formData.adminContactName}
-              onChange={handleChange}
-            />
-            <Input
-              name="adminContactEmail"
-              placeholder="Admin Contact Email"
-              type="email"
-              value={formData.adminContactEmail}
-              onChange={handleChange}
-            />
+        <section className="space-y-6 bg-gray-50 p-6 rounded-lg">
+          <h3 className="text-xl font-semibold text-gray-700 border-b-2 border-blue-200 pb-2">Administration</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Principal's Name</label>
+              <input
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                name="principalName"
+                value={formData.principalName}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Principal's Contact</label>
+              <input
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                name="principalContactNumber"
+                value={formData.principalContactNumber}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Principal's Email</label>
+              <input
+                type="email"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                name="principalEmail"
+                value={formData.principalEmail}
+                onChange={handleChange}
+              />
+            </div>
           </div>
-        </div>
+        </section>
 
         {/* Academic Information */}
-        <div className="mb-4">
-          <h3 className="font-semibold mb-2">Academic Information</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input
-              name="gradesOffered"
-              placeholder="Grades Offered (e.g., Pre-KG to 12)"
-              value={formData.gradesOffered}
-              onChange={handleChange}
-            />
-            <Input
-              name="mediumOfInstruction"
-              placeholder="Medium of Instruction"
-              value={formData.mediumOfInstruction}
-              onChange={handleChange}
-            />
-            <Input
-              name="studentStrength"
-              placeholder="Student Strength"
-              type="number"
-              value={formData.studentStrength}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
+        <section className="space-y-6 bg-gray-50 p-6 rounded-lg">
+          <h3 className="text-xl font-semibold text-gray-700 border-b-2 border-blue-200 pb-2">Academic Information</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Medium of Instruction</label>
+              <select
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white"
+                name="mediumOfInstruction"
+                value={formData.mediumOfInstruction}
+                onChange={handleChange}
+              >
+                <option value="">Select medium</option>
+                {mediumOfInstructionOptions.map(medium => (
+                  <option key={medium} value={medium}>{medium}</option>
+                ))}
+              </select>
+            </div>
 
-        {/* Supporting Documents Upload */}
-        <div className="mb-4">
-          <h3 className="font-semibold mb-2">Supporting Documents Upload</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block mb-1">School Registration Certificate</label>
-              <input type="file" name="schoolRegistrationCertificate" onChange={handleChange} />
-            </div>
-            <div>
-              <label className="block mb-1">Accreditation Certificate</label>
-              <input type="file" name="accreditationCertificate" onChange={handleChange} />
+              <label className="block text-sm font-medium text-gray-600 mb-1">Student Strength</label>
+              <input
+                type="number"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                name="studentStrength"
+                value={formData.studentStrength}
+                onChange={handleChange}
+              />
             </div>
           </div>
-        </div>
+        </section>
+
+        {/* Supporting Documents */}
+        <section className="space-y-6 bg-gray-50 p-6 rounded-lg">
+          <h3 className="text-xl font-semibold text-gray-700 border-b-2 border-blue-200 pb-2">Documents</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Registration Certificate</label>
+              <label className="w-full px-4 py-2 border border-gray-300 rounded-lg flex items-center justify-between cursor-pointer hover:bg-gray-100 transition">
+                <span className="text-gray-500">
+                  {formData.schoolRegistrationCertificate?.name || "Choose file"}
+                </span>
+                <input
+                  type="file"
+                  className="hidden"
+                  name="schoolRegistrationCertificate"
+                  onChange={handleChange}
+                />
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+              </label>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Accreditation Certificate</label>
+              <label className="w-full px-4 py-2 border border-gray-300 rounded-lg flex items-center justify-between cursor-pointer hover:bg-gray-100 transition">
+                <span className="text-gray-500">
+                  {formData.accreditationCertificate?.name || "Choose file"}
+                </span>
+                <input
+                  type="file"
+                  className="hidden"
+                  name="accreditationCertificate"
+                  onChange={handleChange}
+                />
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+              </label>
+            </div>
+          </div>
+        </section>
 
         {/* Authentication Details */}
-        <div className="mb-4">
-          <h3 className="font-semibold mb-2">Authentication Details</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input
-              name="adminUsername"
-              placeholder="Admin Username"
-              value={formData.adminUsername}
-              onChange={handleChange}
-            />
-            <Input
-              name="adminPassword"
-              placeholder="Admin Password"
-              type="password"
-              value={formData.adminPassword}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
+        <section className="space-y-6 bg-gray-50 p-6 rounded-lg">
+          <h3 className="text-xl font-semibold text-gray-700 border-b-2 border-blue-200 pb-2">Authentication</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Admin Username *</label>
+              <input
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                name="adminUsername"
+                value={formData.adminUsername}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-        <div className="flex justify-end gap-2">
-          <Button type="button" variant="outline" onClick={onClose}>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Admin Password *</label>
+              <input
+                type="password"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                name="adminPassword"
+                value={formData.adminPassword}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Form Actions */}
+        <div className="flex justify-end gap-4 pt-6">
+          <button
+            type="button"
+            className="px-6 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200"
+            onClick={onClose}
+          >
             Cancel
-          </Button>
-          <Button type="submit">Submit</Button>
+          </button>
+          <button
+            type="submit"
+            className="px-6 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors duration-200"
+          >
+            Submit Registration
+          </button>
         </div>
       </form>
     </div>
